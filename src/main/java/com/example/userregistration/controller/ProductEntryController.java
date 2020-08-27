@@ -11,19 +11,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.userregistration.model.User;
-import com.example.userregistration.repository.UserRepository;
+import com.example.userregistration.model.Product;
+import com.example.userregistration.repository.ProductRepository;
 
 @RestController
-public class UserRegistrationController {
+public class ProductEntryController {
 	
 	@Autowired
-	UserRepository userRepository;
+	ProductRepository userRepository;
 	
 	@PostMapping(value = "/user" , consumes = MediaType.APPLICATION_JSON_VALUE)
-	public User createUser(@RequestBody Map<String, String> req ) {
+	public Product createUser(@RequestBody Map<String, String> req ) throws Exception{
 		
-		User user = new User();
+		Product user = new Product();
+		if(req.get("firstname") == null || req.get("lastname") == null || req.get("email") == null) {
+			throw new Exception("input value cannot be null");
+		} else if(req.get("firstname") == "" || req.get("lastname") == "" || req.get("email") == "") {
+			throw new Exception("input value cannot be empty");
+		}
 		
 		user.setFirstname(req.get("firstname"));
 		user.setLastname(req.get("lastname"));
@@ -35,11 +40,11 @@ public class UserRegistrationController {
 	
 	
 	@PostMapping("/user/{id}")
-    public User update(@PathVariable String id, @RequestBody Map<String, String> body){
+    public Product update(@PathVariable String id, @RequestBody Map<String, String> body){
         int userId = Integer.parseInt(id);
         
-        User user = null;
-        Optional<User> users = userRepository.findById(userId);
+        Product user = null;
+        Optional<Product> users = userRepository.findById(userId);
         if(users.isPresent()) {
         	user  = users.get();
         	user.setFirstname(body.get("firstname"));
