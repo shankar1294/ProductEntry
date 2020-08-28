@@ -19,7 +19,7 @@ public class Products {
 
 	private double price;
 
-	private String offer;
+	private int offer;
 
 	public Integer getId() {
 		return id;
@@ -53,11 +53,11 @@ public class Products {
 		this.price = price;
 	}
 
-	public String getOffer() {
+	public int getOffer() {
 		return offer;
 	}
 
-	public void setOffer(String offer) {
+	public void setOffer(int offer) {
 		this.offer = offer;
 	}
 

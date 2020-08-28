@@ -34,7 +34,7 @@ public class ProductEntryController {
 		product.setProductname(req.get("productname"));
 		product.setStock(Integer.parseInt(req.get("stock")));
 		product.setPrice(Double.parseDouble(req.get("price")));
-		product.setOffer(req.get("offer"));
+		product.setOffer(Integer.parseInt(req.get("offer")));
 	
 		return productRepository.save(product);
 	}
@@ -51,16 +51,23 @@ public class ProductEntryController {
         	product.setProductname(body.get("productname"));
     		product.setStock(Integer.parseInt(body.get("stock")));
     		product.setPrice(Double.parseDouble(body.get("price")));
-    		product.setOffer(body.get("offer"));        
+    		product.setOffer(Integer.parseInt(body.get("offer")));        
         }
         return productRepository.save(product);
     }
 	
 	@GetMapping("/all-products")
-	public List<Products> getAllProduct() throws Exception{
-		
-		return productRepository.findAll();
-		
+	public List<Products> getAllProduct() throws Exception{		
+		return productRepository.findAll();	
+	}
+	
+	@GetMapping("/product/{id}")
+	public Products getById(@PathVariable String id) {
+		Optional<Products> products = productRepository.findById(Integer.parseInt(id));
+		if(products.isPresent()) {
+			return products.get();
+		}
+		return null;
 	}
 
 }
