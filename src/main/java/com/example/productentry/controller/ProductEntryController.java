@@ -27,11 +27,9 @@ public class ProductEntryController {
 		ProductEntryValidation productEntryValidation = new ProductEntryValidation();
 		productEntryValidation.validateRequest(req);
 		return productEntryService.createProduct(req);
-		
 	}
 	
-	
-	@PostMapping("/product/{id}")
+	@PostMapping("/product-update/{id}")
     public Products update(@PathVariable String id, @RequestBody Map<String, String> body){
        
 		return productEntryService.updateProduct(id, body);
@@ -42,7 +40,7 @@ public class ProductEntryController {
 		return productEntryService.getAllProduct();	
 	}
 	
-	@GetMapping("/product/{id}")
+	@GetMapping("/getproduct/{id}")
 	public Products getById(@PathVariable String id) {
 		return productEntryService.getById(id);
 		
