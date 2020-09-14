@@ -2,7 +2,6 @@ package com.example.productentry.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,61 +12,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.productentry.model.Products;
-import com.example.productentry.repository.ProductRepository;
+import com.example.productentry.service.ProductEntryService;
+import com.example.productentry.util.ProductEntryValidation;
 
 @RestController
 public class ProductEntryController {
 	
 	@Autowired
-	ProductRepository productRepository;
+	ProductEntryService productEntryService;
 	
 	@PostMapping(value = "/product" , consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Products createProduct(@RequestBody Map<String, String> req ) throws Exception{
 		
-		Products product = new Products();
-		if(req.get("productname") == null || req.get("stock") == null || req.get("offer") == null || req.get("price") == null){
-			throw new Exception("input value cannot be null");
-		} else if(req.get("productname") == "" || req.get("stock") == "" || req.get("offer") == "" || req.get("price") == "") {
-			throw new Exception("input value cannot be empty");
-		}
+		ProductEntryValidation productEntryValidation = new ProductEntryValidation();
+		productEntryValidation.validateRequest(req);
+		return productEntryService.createProduct(req);
 		
-		product.setProductname(req.get("productname"));
-		product.setStock(Integer.parseInt(req.get("stock")));
-		product.setPrice(Double.parseDouble(req.get("price")));
-		product.setOffer(Integer.parseInt(req.get("offer")));
-	
-		return productRepository.save(product);
 	}
 	
 	
 	@PostMapping("/product/{id}")
     public Products update(@PathVariable String id, @RequestBody Map<String, String> body){
-        int productId = Integer.parseInt(id);
-        
-        Products product = null;
-        Optional<Products> products = productRepository.findById(productId);
-        if(products.isPresent()) {
-        	product  = products.get();
-        	product.setProductname(body.get("productname"));
-    		product.setStock(Integer.parseInt(body.get("stock")));
-    		product.setPrice(Double.parseDouble(body.get("price")));
-    		product.setOffer(Integer.parseInt(body.get("offer")));        
-        }
-        return productRepository.save(product);
+       
+		return productEntryService.updateProduct(id, body);
     }
 	
 	@GetMapping("/all-products")
 	public List<Products> getAllProduct() throws Exception{		
-		return productRepository.findAll();	
+		return productEntryService.getAllProduct();	
 	}
 	
 	@GetMapping("/product/{id}")
 	public Products getById(@PathVariable String id) {
-		Optional<Products> products = productRepository.findById(Integer.parseInt(id));
-		if(products.isPresent()) {
-			return products.get();
-		}
-		return null;
+		return productEntryService.getById(id);
+		
 	}
 
 }
